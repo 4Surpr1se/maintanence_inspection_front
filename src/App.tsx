@@ -1,9 +1,10 @@
 import { ConfigProvider } from "antd";
-import AviaPage from "./pages/AviaPage";
+import EngineersPage from "./pages/EngineersPage";
 import { GlobalStyle } from "./styles/global";
 import ruRU from "antd/es/locale/ru_RU";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import Router from "./router/Router";
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
     >
       <GlobalStyle />
       <DndProvider backend={HTML5Backend}>
-        <AviaPage />
+        <Router />
       </DndProvider>
     </ConfigProvider>
   );

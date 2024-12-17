@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import flightSlice from "./slices/flightSlice";
+import EngineersSlice from "./slices/engineersSlice";
 
 export const store = configureStore({
   reducer: {
-    flight: flightSlice,
+    engineers: EngineersSlice,
   },
 });
 

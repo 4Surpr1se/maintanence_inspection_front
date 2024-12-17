@@ -5,18 +5,19 @@ import CardTableUser from "@/components/molecules/Card/CardTableUser";
 import { Flex } from "antd";
 import { TableTitle } from "./styles";
 import { useDrop } from "react-dnd";
+import { getWorkingHours } from "@/lib/getWorkingHours";
+import { useAppSelector } from "@/store/redux-hooks";
+import { IEngineers } from "@/store/slices/engineersSlice";
 
-interface DataType {
-  trackingId: string;
+interface DataType extends IEngineers {
   fio: string;
-  hours: number;
 }
 
 const columns: Column<DataType>[] = [
   {
     key: "trackingId",
     title: "Tracking ID",
-    dataIndex: "trackingId",
+    dataIndex: "engineer_id",
   },
   {
     key: "fio",
@@ -27,33 +28,30 @@ const columns: Column<DataType>[] = [
   {
     key: "hours",
     title: "Доступное количество часов",
-    dataIndex: "hours",
-    render: (text) => <CustomSelect value={text} />,
-    sorter: (a, b) => a.hours - b.hours,
+    dataIndex: "mh",
+    render: (text) => <CustomSelect value={text} options={getWorkingHours()} />,
+    sorter: (a, b) => a.mh - b.mh,
   },
 ];
 
-const data: DataType[] = [
-  {
-    trackingId: "#20462",
-    fio: "Иван Иванов",
-    hours: 1,
-  },
-  {
-    trackingId: "#20122",
-    fio: "Иван Смирнов",
-    hours: 5,
-  },
-  {
-    trackingId: "#204122",
-    fio: "Иван Попов",
-    hours: 9,
-  },
-];
+interface AirplanesTableProps {
+  sn: string;
+  type: string;
+}
 
-export default function FlightsTable() {
+export default function AirplanesTable(props: AirplanesTableProps) {
+  const { sn, type } = props;
+
+  const engineers = useAppSelector((s) => s.engineers.data);
+
+  const data = engineers
+    .filter((el) => el.sn === sn)
+    .map((el) => {
+      return { ...el, fio: `${el.surname} ${el.name}` };
+    });
+
   const [, dropRef] = useDrop({
-    accept: "pilot",
+    accept: "engineer",
     drop: (item) => {
       console.log(item);
     },
@@ -65,8 +63,8 @@ export default function FlightsTable() {
         config={{
           columns,
           data,
-          uniqKey: "trackingId",
-          header: <TableTitle>RA-09607</TableTitle>,
+          uniqKey: "id",
+          header: <TableTitle>{sn}</TableTitle>,
         }}
       />
     </Flex>
