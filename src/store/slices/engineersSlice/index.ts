@@ -2,7 +2,7 @@ import { BASE_URL } from "@/constants";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export interface IEngineers {
+export interface IEngineer {
   date: string;
   engineer_id: number;
   id: number;
@@ -20,11 +20,9 @@ export interface IAvailable {
 }
 
 export const fetchEngineers = createAsyncThunk<
-  { data: IEngineers[]; available: IAvailable[] },
+  { data: IEngineer[]; available: IAvailable[] },
   string
 >("flight/fetchFlight", async (date) => {
-  console.log("d", date);
-
   try {
     const { data } = await axios.get(`${BASE_URL + date}/`);
 
@@ -35,7 +33,7 @@ export const fetchEngineers = createAsyncThunk<
 });
 
 interface EngineersSliceState {
-  data: IEngineers[];
+  data: IEngineer[];
   available: IAvailable[];
 }
 
@@ -47,7 +45,23 @@ const initialState: EngineersSliceState = {
 export const EngineersSlice = createSlice({
   name: "flight",
   initialState,
-  reducers: {},
+  reducers: {
+    setEngineers: (state, action) => {
+      const newEngineers = action.payload.data;
+
+      console.log("ne", newEngineers);
+
+      const newData = state.data.filter(
+        (engineer) =>
+          !newEngineers.some(
+            (newEng: IEngineer) =>
+              newEng.engineer_id === engineer.engineer_id && newEng.sn === engineer.sn,
+          ),
+      );
+
+      state.data = [...newData, ...newEngineers];
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchEngineers.fulfilled, (state, action) => {
       state.data = action.payload?.data;
@@ -56,4 +70,5 @@ export const EngineersSlice = createSlice({
   },
 });
 
+export const { setEngineers } = EngineersSlice.actions;
 export default EngineersSlice.reducer;

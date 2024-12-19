@@ -5,7 +5,7 @@ import { useAppSelector } from "@/store/redux-hooks";
 export default function Airplanes() {
   const availables = useAppSelector((s) => s.engineers.available);
 
-  console.log(availables);
+  if (!availables) return;
 
   return (
     <Flex vertical gap={10}>

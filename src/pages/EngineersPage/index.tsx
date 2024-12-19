@@ -7,12 +7,17 @@ import { useEffect } from "react";
 import { useAppDispatch } from "@/store/redux-hooks";
 import { fetchEngineers } from "@/store/slices/engineersSlice";
 import dayjs from "dayjs";
+import { initializeWebSocket } from "@/api/websocket";
 
 export default function EngineersPage() {
-  const dispath = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispath(fetchEngineers(dayjs().format("YYYY-MM-DD")));
+    initializeWebSocket(dispatch);
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchEngineers(dayjs().format("YYYY-MM-DD")));
   }, []);
 
   return (

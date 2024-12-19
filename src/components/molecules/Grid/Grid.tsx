@@ -97,8 +97,6 @@ const Grid = <T extends AnyObject>({
           <GridRow {...onRow?.(el, i)}>
             {columns.map((col, i) => {
               if (accordion) {
-                console.log(col);
-
                 return <p>a</p>;
               }
 
