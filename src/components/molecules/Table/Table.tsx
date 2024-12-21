@@ -5,7 +5,6 @@ import { TableConfig } from "./types";
 import { HeaderCell, Row, RowProps } from "./components";
 import { TableProps as ANTDTableProps } from "antd/lib";
 import { TableWrapper } from "./styles";
-import { IEngineer } from "@/store/slices/engineersSlice";
 
 export type TableProps<T> = {
   config: TableConfig<T>;
@@ -26,6 +25,7 @@ const Table = <T extends AnyObject>({
     tableLayout,
     showHeader,
     sticky,
+    footer,
   },
   bordered = false,
   withWrapper = true,
@@ -97,12 +97,13 @@ const Table = <T extends AnyObject>({
         showHeader={showHeader}
         rowKey={uniqKey}
         sticky={sticky}
+        footer={footer ? () => footer : undefined}
         components={{
           header: {
             cell: HeaderCell,
           },
           body: {
-            row: (props: RowProps) => <Row {...props} engineerItems={data as IEngineer[]} />,
+            row: (props: RowProps) => <Row {...props} />,
           },
         }}
         {...props}

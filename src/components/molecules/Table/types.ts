@@ -28,4 +28,5 @@ export type TableConfig<T> = {
   tableLayout?: TableProps<T>["tableLayout"];
   showHeader?: TableProps<T>["showHeader"];
   sticky?: TableProps<T>["sticky"];
+  footer?: ReactNode;
 };

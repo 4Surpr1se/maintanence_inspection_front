@@ -1,10 +1,10 @@
 import { ConfigProvider } from "antd";
-import EngineersPage from "./pages/EngineersPage";
 import { GlobalStyle } from "./styles/global";
 import ruRU from "antd/es/locale/ru_RU";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Router from "./router/Router";
+import { Toaster } from "sonner";
 
 function App() {
   return (
@@ -19,6 +19,16 @@ function App() {
         },
       }}
     >
+      <Toaster
+        richColors
+        expand={false}
+        position="top-right"
+        closeButton
+        toastOptions={{
+          duration: 3000,
+          className: "toaster-class",
+        }}
+      />
       <GlobalStyle />
       <DndProvider backend={HTML5Backend}>
         <Router />

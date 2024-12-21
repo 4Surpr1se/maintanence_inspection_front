@@ -1,3 +1,4 @@
+import { useAppSelector } from "@/store/redux-hooks";
 import { IEngineer } from "@/store/slices/engineersSlice";
 import { memo, ReactNode } from "react";
 import { useDrag } from "react-dnd";
@@ -5,7 +6,6 @@ import styled from "styled-components";
 
 export type RowProps = {
   children: ReactNode;
-  engineerItems: IEngineer[];
   "data-row-key": number;
 };
 
@@ -22,7 +22,9 @@ const RowStyled = styled.tr<{ $isDragStart: boolean }>`
   }
 `;
 
-export const Row = memo(({ children, engineerItems, ...props }: RowProps) => {
+export const Row = memo(({ children, ...props }: RowProps) => {
+  const engineerItems = useAppSelector((s) => s.engineers.selectData);
+
   const item = engineerItems.find(
     (engineer: IEngineer) => engineer.id === { ...props }["data-row-key"],
   );

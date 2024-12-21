@@ -7,6 +7,11 @@ export const GlobalStyle = createGlobalStyle`
 		font-weight: 500;
 		background-color: var(--red);
 	}
+
+	.toaster-class {
+  	padding: 16px !important;
+	}
+
 `;
 
 export const Container = styled.div`

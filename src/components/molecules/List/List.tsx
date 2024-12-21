@@ -29,6 +29,7 @@ export const List = <T extends AnyObject>({
     tableLayout,
     showHeader,
     sticky,
+    footer,
   },
   bordered,
   loading,
@@ -100,6 +101,7 @@ export const List = <T extends AnyObject>({
           tableLayout,
           showHeader,
           sticky,
+          footer,
         }}
         bordered={bordered}
         withWrapper={withWrapper}

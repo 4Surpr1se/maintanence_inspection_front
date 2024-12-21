@@ -8,25 +8,24 @@ import { useAppDispatch } from "@/store/redux-hooks";
 import { fetchEngineers } from "@/store/slices/engineersSlice";
 import dayjs from "dayjs";
 import { initializeWebSocket } from "@/api/websocket";
+import ReportTable from "@/components/organisms/EngineersPage/ReportTable";
 
 export default function EngineersPage() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    initializeWebSocket(dispatch);
-  }, [dispatch]);
-
-  useEffect(() => {
+    initializeWebSocket(dispatch, dayjs().format("YYYY-MM-DD"));
     dispatch(fetchEngineers(dayjs().format("YYYY-MM-DD")));
-  }, []);
+  }, [dispatch]);
 
   return (
     <EngineersPageStyle>
       <Container>
-        <Flex gap={20} justify="space-between">
+        <Flex gap={20} justify="space-between" style={{ marginBottom: 20 }}>
           <Airplanes />
           <EngineersTable />
         </Flex>
+        <ReportTable />
       </Container>
     </EngineersPageStyle>
   );

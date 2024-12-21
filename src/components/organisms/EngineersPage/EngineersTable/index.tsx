@@ -1,49 +1,50 @@
 import { CustomSelect } from "@/components/atoms/CustomSelect";
 import { List } from "@/components/molecules/List";
 import { Column } from "@/components/molecules/Table";
-import EngineersTableHead from "../EngineersTableHead";
+import EngineersTableHead from "./EngineersTableHead";
 import CardTableUser from "@/components/molecules/Card/CardTableUser";
 import { useAppDispatch, useAppSelector } from "@/store/redux-hooks";
-import { IEngineer } from "@/store/slices/engineersSlice";
+import { setSelectEngineers } from "@/store/slices/engineersSlice";
 import { getWorkingHours } from "@/lib/getWorkingHours";
 import { useSearchParams } from "react-router";
 import { useDrop } from "react-dnd";
 import { sendWebSocketMessage } from "@/api/websocket";
+import { IEngineer } from "@/store/slices/engineersSlice/types";
 
 interface DataType extends IEngineer {
   fio: string;
 }
 
-const columns: Column<DataType>[] = [
-  {
-    key: "trackingId",
-    title: "Tracking ID",
-    dataIndex: "engineer_id",
-  },
-  {
-    key: "fio",
-    title: "ФИО",
-    dataIndex: "fio",
-    render: (user) => <CardTableUser iconUrl="" userName={user} />,
-  },
-  {
-    key: "hours",
-    title: "Доступное количество часов",
-    dataIndex: "mh",
-    render: (text, record) => (
-      <CustomSelect
-        defaultValue={text}
-        onChange={(e) => localStorage.setItem(record.engineer_id.toString(), e)}
-        options={getWorkingHours(text)}
-      />
-    ),
-  },
-];
-
 export default function EngineersTable() {
   const engineers = useAppSelector((s) => s.engineers.data);
   const [searchParams] = useSearchParams();
   const dispatch = useAppDispatch();
+
+  const columns: Column<DataType>[] = [
+    {
+      key: "trackingId",
+      title: "Tracking ID",
+      dataIndex: "engineer_id",
+    },
+    {
+      key: "fio",
+      title: "ФИО",
+      dataIndex: "fio",
+      render: (user) => <CardTableUser iconUrl="" userName={user} />,
+    },
+    {
+      key: "hours",
+      title: "Доступное количество часов",
+      dataIndex: "mh",
+      render: (text, record) => (
+        <CustomSelect
+          defaultValue={text}
+          onChange={(e) => dispatch(setSelectEngineers({ data: [{ ...record, mh: e }] }))}
+          options={getWorkingHours(text)}
+        />
+      ),
+    },
+  ];
 
   const data: DataType[] = engineers
     ? engineers
@@ -57,6 +58,7 @@ export default function EngineersTable() {
           const engineerParam = searchParams.get("engineer");
           return (
             el.sn === "NAN" &&
+            el.mh !== 0 &&
             (engineerParam
               ? `${el.surname} ${el.name}`.toLowerCase().includes(engineerParam.toLowerCase())
               : true)
@@ -67,18 +69,18 @@ export default function EngineersTable() {
   const [, dropRef] = useDrop({
     accept: "engineer",
     drop: (item: IEngineer) => {
-      const sendEngineerMh =
-        engineers.find((el) => el.engineer_id === item.engineer_id && el.sn === item.sn)!.mh -
-        item.mh;
-      const engineerMh =
-        engineers.find((el) => el.engineer_id === item.engineer_id && el.sn === "NAN")!.mh +
-        item.mh;
+      const findEngineer = data.find((el) => el.engineer_id === item.engineer_id);
+
+      const mhSelected = engineers.find((el) => el.id === item.id)!.mh - item.mh;
+      const engineerMh = findEngineer ? findEngineer.mh + item.mh : item.mh;
+
+      if (findEngineer && item.id === findEngineer.id) return;
 
       const engineer = {
         data: [
           {
             date: item.date,
-            mh: sendEngineerMh,
+            mh: mhSelected,
             engineer_id: item.engineer_id,
             sn: item.sn,
           },
@@ -91,11 +93,8 @@ export default function EngineersTable() {
         ],
       };
 
-      console.log(item);
-      console.log(engineer);
-
       if (item) {
-        dispatch(sendWebSocketMessage(engineer));
+        sendWebSocketMessage(engineer);
       }
     },
   });
