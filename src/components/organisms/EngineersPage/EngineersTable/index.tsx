@@ -17,6 +17,8 @@ interface DataType extends IEngineer {
 
 export default function EngineersTable() {
   const engineers = useAppSelector((s) => s.engineers.data);
+  const engineersLoading = useAppSelector((s) => s.engineers.loading);
+
   const [searchParams] = useSearchParams();
   const dispatch = useAppDispatch();
 
@@ -102,6 +104,7 @@ export default function EngineersTable() {
   return (
     <div ref={dropRef}>
       <List
+        loading={engineersLoading === "pending"}
         config={{
           columns,
           data,

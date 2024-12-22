@@ -20,10 +20,11 @@ export const CustomBtnStyle = styled.button<{
 
   border: 1px solid rgba(217, 217, 217, 1);
 
-  background-color: var(--grey);
+  background-color: ${(p) => (p.$type === "default" ? "var(--grey)" : "#624DE3")};
+  color: ${(p) => (p.$type === "default" ? "var(--black)" : "var(--white)")};
 
   &:active {
-    background-color: var(--white);
+    background-color: ${(p) => (p.$type === "default" ? "var(--white)" : "#624DD1")};
   }
 
   &:disabled {

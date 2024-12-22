@@ -24,6 +24,7 @@ export default function AirplanesTable(props: AirplanesTableProps) {
   const { sn, type } = props;
   const dispatch = useAppDispatch();
   const engineers = useAppSelector((s) => s.engineers.data);
+  const engineersLoading = useAppSelector((s) => s.engineers.loading);
 
   const [hovered, setHovered] = useState<"orange" | "green" | null>(null);
 
@@ -104,6 +105,7 @@ export default function AirplanesTable(props: AirplanesTableProps) {
   return (
     <TableWrapper vertical ref={dropRef} $hovered={hovered} $isOver={isOver}>
       <List
+        loading={engineersLoading === "pending"}
         config={{
           columns,
           data,
