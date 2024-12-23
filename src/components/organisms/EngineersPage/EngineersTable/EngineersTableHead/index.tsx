@@ -40,7 +40,7 @@ export default function EngineersTableHead() {
       <CustomButton
         size="small"
         onClick={() => {
-          if (dayjs().format("YYYY-MM-HH") === selectedDate.format("YYYY-MM-HH")) return;
+          if (dayjs().format("YYYY-MM-DD") === selectedDate.format("YYYY-MM-DD")) return;
           onDateChange(dayjs());
         }}
       >
